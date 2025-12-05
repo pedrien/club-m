@@ -10,6 +10,7 @@ export interface ApiResponse {
   error?: string;
   data?: unknown;
   details?: string;
+  _status?: number;
 }
 
 export const memberService = {

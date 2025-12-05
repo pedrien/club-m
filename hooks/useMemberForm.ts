@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { memberService } from "@/services/member.service";
-import { FormData, transformFormDataToBackend } from "@/validators/devenir.membre.validator";
+import { FormData } from "@/validators/devenir.membre.validator";
 
 interface UseMemberFormReturn {
   isSubmitting: boolean;
@@ -31,26 +31,34 @@ export const useMemberForm = (): UseMemberFormReturn => {
         const response = await memberService.submitMemberForm(formData);
 
         // Considérer un succès si le statut est 200-299 ou si success est true
-        const isSuccess = 
-          response.success || 
-          (response._status && response._status >= 200 && response._status < 300);
-        
+        const isSuccess =
+          response.success ||
+          (response._status &&
+            response._status >= 200 &&
+            response._status < 300);
+
         if (isSuccess) {
-          const successMsg = response.message || "Votre demande d'adhésion a été enregistrée avec succès. Vous recevrez un email de confirmation sous peu.";
+          const successMsg =
+            response.message ||
+            "Votre demande d'adhésion a été enregistrée avec succès. Vous recevrez un email de confirmation sous peu.";
           setSuccessMessage(successMsg);
-          
-          console.log("✅ [HOOK] Formulaire soumis avec succès, redirection dans 1.5s");
-          
+
+          console.log(
+            "✅ [HOOK] Formulaire soumis avec succès, redirection dans 1.5s"
+          );
+
           // Rediriger vers la page de confirmation après 1.5 secondes
           setTimeout(() => {
             router.push("/confirmation");
           }, 1500);
         } else {
           // Erreur du backend
-          const errorMsg = response.error || "Une erreur est survenue lors de l'enregistrement";
+          const errorMsg =
+            response.error ||
+            "Une erreur est survenue lors de l'enregistrement";
           setErrorMessage(errorMsg);
           setIsSubmitting(false);
-          
+
           console.error("❌ [HOOK] Erreur lors de la soumission:", {
             error: errorMsg,
             response,
@@ -76,4 +84,3 @@ export const useMemberForm = (): UseMemberFormReturn => {
     submitForm,
   };
 };
-

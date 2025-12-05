@@ -3,9 +3,11 @@ import React from "react";
 import AppContainer from "@/components/common/containers/appContainer";
 
 const Container = () => {
-  return <AppContainer>
-    
-  </AppContainer>;
+  return (
+    <AppContainer>
+      <div></div>
+    </AppContainer>
+  );
 };
 
 export default Container;
