@@ -26,7 +26,7 @@ const ViewApp = ({
   children: React.ReactNode;
 }): JSX.Element => {
   return (
-    <div className="global-div min-h-screen overflow-x-hidden">
+    <div className="global-div min-h-screen">
       {children}
     </div>
   );
