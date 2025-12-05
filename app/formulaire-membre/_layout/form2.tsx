@@ -32,7 +32,7 @@ const Form2: React.FC<Form2Props> = ({
         <h2 className="text-4xl md:text-4xl font-bold mb-3 animate-fade-in">
           Votre niveau dans l'entrepreneuriat
         </h2>
-        <p className="text-muted-foreground mb-8">
+        <p className="text-muted-foreground mb-4 animate-fade-in">
           positionner la candidate sur un niveau pour adapter les parcours et
           les offres Club M.
         </p>

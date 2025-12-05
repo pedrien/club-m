@@ -233,7 +233,7 @@ const FormMember = () => {
               <div className="content-text relative z-20 h-full lg:p-8 flex flex-col">
                 <div className="flex mb-10">
                   <button
-                    onClick={() => router.back()}
+                    onClick={handleGoBack}
                     className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-[#fff] text-black hover:bg-[#000] shadow-none hover:text-white transition-colors duration-200 cursor-pointer"
                   >
                     <ArrowLeft size={20}></ArrowLeft>

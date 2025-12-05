@@ -44,7 +44,7 @@ const Form1: React.FC<Form1Props> = ({
         <h2 className="text-4xl md:text-4xl font-bold mb-3 animate-fade-in">
           Votre situation actuelle
         </h2>
-        <p className="text-muted-foreground mb-8">
+        <p className="text-muted-foreground mb-4 animate-fade-in">
           comprendre rapidement où en est la candidate dans son parcours entre-
           preneurial.
         </p>

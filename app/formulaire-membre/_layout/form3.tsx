@@ -42,7 +42,7 @@ const Form3: React.FC<Form3Props> = ({
         <h2 className="text-4xl md:text-4xl font-bold mb-3 animate-fade-in">
           Ce que vous attendez du Club M
         </h2>
-        <p className="text-muted-foreground mb-8">
+        <p className="text-muted-foreground mb-4 animate-fade-in">
           identifier les besoins prioritaires pour orienter l'accompagnement,
           les ate- liers et les offres.
         </p>

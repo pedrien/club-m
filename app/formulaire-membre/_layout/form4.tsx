@@ -50,7 +50,7 @@ const Form4: React.FC<Form4Props> = ({
         <h2 className="text-4xl md:text-4xl font-bold mb-3 animate-fade-in">
           Vos informations personnelles
         </h2>
-        <p className="text-muted-foreground mb-8">
+        <p className="text-muted-foreground mb-4 animate-fade-in">
           collecter les coordonnées nécessaires pour recontacter la candidate et
           fina- liser son inscription.
         </p>
