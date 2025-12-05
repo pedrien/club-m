@@ -98,6 +98,14 @@ export const memberService = {
           errorInfo.message = responseData.message;
         }
 
+        // Afficher les erreurs de validation détaillées si elles existent
+        if ("errors" in responseData && responseData.errors) {
+          errorInfo.validationErrors = responseData.errors;
+          console.error("❌ [ERROR] Erreurs de validation détaillées:", {
+            errors: responseData.errors,
+          });
+        }
+
         // Si aucune propriété d'erreur n'existe, afficher toute la réponse
         if (
           !responseData.error &&

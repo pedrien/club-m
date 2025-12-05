@@ -112,6 +112,14 @@ export async function POST(request: NextRequest) {
             errorInfo.message = backendData.message;
           }
 
+          // Afficher les erreurs de validation détaillées si elles existent
+          if ("errors" in backendData && backendData.errors) {
+            errorInfo.validationErrors = backendData.errors;
+            console.error("❌ [API ROUTE] Erreurs de validation détaillées:", {
+              errors: backendData.errors,
+            });
+          }
+
           // Si aucune propriété d'erreur standard, afficher toute la réponse
           if (!("error" in backendData) && !("details" in backendData)) {
             errorInfo.fullResponse = backendData;
