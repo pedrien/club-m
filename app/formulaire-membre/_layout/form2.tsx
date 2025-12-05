@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React from "react";
+import { validateStep2, FormData as FormDataType } from "@/validators/devenir.membre.validator";
 
 interface Form2Props {
   formData: any;
@@ -28,6 +29,9 @@ const Form2: React.FC<Form2Props> = ({
     "Ambition scale / expansion",
   ];
 
+  // Obtenir les erreurs de validation
+  const validationErrors = validateStep2(formData as FormDataType);
+
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -40,6 +44,16 @@ const Form2: React.FC<Form2Props> = ({
         </p>
       </div>
       <div className="space-y-6 animate-fade-in-delay">
+        {Object.keys(validationErrors).length > 0 && (
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm">
+            <p className="font-medium mb-2">Veuillez corriger les erreurs suivantes :</p>
+            <ul className="list-disc list-inside space-y-1">
+              {Object.entries(validationErrors).map(([field, message]) => (
+                <li key={field}>{message}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium mb-4">
             Comment vous situez-vous aujourd'hui
@@ -83,15 +97,22 @@ const Form2: React.FC<Form2Props> = ({
             gestion d'entreprise
           </label>
           <Input
-            type="text"
+            type="number"
             id="connaissancesGestion"
             name="connaissancesGestion"
             value={formData.connaissancesGestion}
             onChange={onChange}
             className="shadow-none h-[42px] focus-visible:ring-0 focus-visible:border-black rounded-lg"
             required
-            placeholder="échelle 1 à 5"
+            min="1"
+            max="5"
+            placeholder="Entrez un nombre entre 1 et 5"
           />
+          {validationErrors.connaissancesGestion && (
+            <p className="text-red-500 text-sm mt-1">
+              {validationErrors.connaissancesGestion}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium mb-4">
