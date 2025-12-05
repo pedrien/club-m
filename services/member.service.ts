@@ -72,14 +72,34 @@ export const memberService = {
       });
 
       // Log spécifique selon le statut
-      if (response.ok && responseData.success) {
+      // Considérer un succès si le statut est 200-299, même sans propriété success
+      const isSuccess =
+        response.ok || (response.status >= 200 && response.status < 300);
+      const hasError =
+        responseData &&
+        typeof responseData === "object" &&
+        "error" in responseData &&
+        responseData.error;
+
+      if (isSuccess && !hasError) {
         console.log(
           "✅ [SUCCESS] Demande d'adhésion enregistrée avec succès:",
           {
-            message: responseData.message,
+            message: responseData.message || "Demande enregistrée avec succès",
             data: responseData.data,
+            status: response.status,
           }
         );
+
+        // Retourner avec success: true pour le hook
+        return {
+          success: true,
+          message:
+            responseData.message ||
+            "Votre demande d'adhésion a été enregistrée avec succès",
+          data: responseData.data || responseData,
+          _status: response.status,
+        } as ApiResponse & { _status: number };
       } else {
         // Construire un message d'erreur complet
         const errorInfo: Record<string, unknown> = {
@@ -116,13 +136,15 @@ export const memberService = {
         }
 
         console.error("❌ [ERROR] Erreur du backend:", errorInfo);
-      }
 
-      return {
-        ...responseData,
-        // On garde le statut HTTP pour référence
-        _status: response.status,
-      } as ApiResponse & { _status: number };
+        // Retourner l'erreur
+        return {
+          ...responseData,
+          success: false,
+          // On garde le statut HTTP pour référence
+          _status: response.status,
+        } as ApiResponse & { _status: number };
+      }
     } catch (error) {
       console.error("🚨 [EXCEPTION] Erreur lors de l'appel au backend:", {
         error: error instanceof Error ? error.message : "Erreur inconnue",

@@ -94,7 +94,18 @@ export async function POST(request: NextRequest) {
       });
 
       // Log d'erreur si le backend a retourné une erreur
-      if (!backendResponse.ok || (backendData && !backendData.success)) {
+      // Considérer un succès si le statut est 200-299, même sans propriété success
+      const isSuccess =
+        backendResponse.ok ||
+        (backendResponse.status >= 200 && backendResponse.status < 300);
+
+      if (
+        !isSuccess ||
+        (backendData &&
+          typeof backendData === "object" &&
+          "error" in backendData &&
+          backendData.error)
+      ) {
         const errorInfo: Record<string, unknown> = {
           status: backendResponse.status,
           statusText: backendResponse.statusText,

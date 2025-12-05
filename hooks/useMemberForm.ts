@@ -30,9 +30,14 @@ export const useMemberForm = (): UseMemberFormReturn => {
 
         const response = await memberService.submitMemberForm(formData);
 
-        // Ne pas afficher de message de succès si le backend n'a pas répondu avec succès
-        if (response.success && response._status && response._status >= 200 && response._status < 300) {
-          setSuccessMessage(response.message || "Votre demande d'adhésion a été enregistrée avec succès");
+        // Considérer un succès si le statut est 200-299 ou si success est true
+        const isSuccess = 
+          response.success || 
+          (response._status && response._status >= 200 && response._status < 300);
+        
+        if (isSuccess) {
+          const successMsg = response.message || "Votre demande d'adhésion a été enregistrée avec succès. Vous recevrez un email de confirmation sous peu.";
+          setSuccessMessage(successMsg);
           
           console.log("✅ [HOOK] Formulaire soumis avec succès, redirection dans 1.5s");
           
