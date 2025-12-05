@@ -14,6 +14,7 @@ interface Form4Props {
   isSubmitting: boolean;
   errorMessage: string;
   successMessage: string;
+  isStepValid: boolean;
 }
 
 const Form4: React.FC<Form4Props> = ({
@@ -25,6 +26,7 @@ const Form4: React.FC<Form4Props> = ({
   isSubmitting,
   errorMessage,
   successMessage,
+  isStepValid,
 }) => {
   const connuOptions = [
     "Réseaux sociaux",
@@ -282,11 +284,7 @@ const Form4: React.FC<Form4Props> = ({
           </Button>
           <Button
             onClick={onSubmit}
-            disabled={
-              isSubmitting ||
-              !formData.confirmeInfos ||
-              !formData.accepteContact
-            }
+            disabled={isSubmitting || !isStepValid}
             className="flex-1 bg-[#d7f75b] text-black cursor-pointer h-11 shadow-none rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#d7f75b]/80 hover:text-black"
           >
             {isSubmitting ? "Envoi en cours..." : "Valider"}

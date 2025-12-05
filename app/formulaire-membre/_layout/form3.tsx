@@ -10,6 +10,7 @@ interface Form3Props {
   onRadioChange: (name: string, value: string) => void;
   onNext: () => void;
   onPrev: () => void;
+  isStepValid: boolean;
 }
 
 const Form3: React.FC<Form3Props> = ({
@@ -18,6 +19,7 @@ const Form3: React.FC<Form3Props> = ({
   onRadioChange,
   onNext,
   onPrev,
+  isStepValid,
 }) => {
   const besoinsOptions = [
     "Clarifier mon idée et structurer mon projet",
@@ -144,7 +146,8 @@ const Form3: React.FC<Form3Props> = ({
           </Button>
           <Button
             onClick={onNext}
-            className="flex-1 bg-[#d7f75b] text-black cursor-pointer h-11 shadow-none rounded-lg hover:bg-[#d7f75b]/80 hover:text-black"
+            disabled={!isStepValid}
+            className="flex-1 bg-[#d7f75b] text-black cursor-pointer h-11 shadow-none rounded-lg hover:bg-[#d7f75b]/80 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Suivant
           </Button>

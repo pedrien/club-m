@@ -40,8 +40,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Log des données reçues (pour le développement)
-    console.log("Envoi de la demande au backend:", {
-      url: `${API_CONFIG.BASE_URL}/api/v1/members`,
+    // Construire l'URL du backend (éviter les doubles slashes)
+    const baseUrl = API_CONFIG.BASE_URL?.endsWith("/")
+      ? API_CONFIG.BASE_URL.slice(0, -1)
+      : API_CONFIG.BASE_URL;
+    const backendUrl = `${baseUrl}/members`;
+
+    console.log("📤 [API ROUTE] Envoi de la demande au backend:", {
+      url: backendUrl,
       name,
       first_name,
       email,
@@ -53,7 +59,7 @@ export async function POST(request: NextRequest) {
     const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
 
     try {
-      const backendResponse = await fetch(`${API_CONFIG.BASE_URL}members`, {
+      const backendResponse = await fetch(backendUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,6 +83,44 @@ export async function POST(request: NextRequest) {
           success: false,
           error: text || "Erreur inconnue du serveur",
         };
+      }
+
+      // Log de la réponse du backend dans la console serveur
+      console.log("📥 [API ROUTE] Réponse du backend reçue:", {
+        status: backendResponse.status,
+        statusText: backendResponse.statusText,
+        data: backendData,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Log d'erreur si le backend a retourné une erreur
+      if (!backendResponse.ok || (backendData && !backendData.success)) {
+        const errorInfo: Record<string, unknown> = {
+          status: backendResponse.status,
+          statusText: backendResponse.statusText,
+          url: backendUrl,
+        };
+
+        if (backendData && typeof backendData === "object") {
+          if ("error" in backendData && backendData.error) {
+            errorInfo.error = backendData.error;
+          }
+          if ("details" in backendData && backendData.details) {
+            errorInfo.details = backendData.details;
+          }
+          if ("message" in backendData && backendData.message) {
+            errorInfo.message = backendData.message;
+          }
+
+          // Si aucune propriété d'erreur standard, afficher toute la réponse
+          if (!("error" in backendData) && !("details" in backendData)) {
+            errorInfo.fullResponse = backendData;
+          }
+        } else {
+          errorInfo.rawResponse = backendData;
+        }
+
+        console.error("❌ [API ROUTE] Erreur du backend:", errorInfo);
       }
 
       // Retourner la réponse du backend avec le même statut

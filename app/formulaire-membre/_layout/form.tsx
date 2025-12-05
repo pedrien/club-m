@@ -17,6 +17,8 @@ import Form1 from "./form1";
 import Form2 from "./form2";
 import Form3 from "./form3";
 import Form4 from "./form4";
+import { useMemberForm } from "@/hooks/useMemberForm";
+import { isStepValid, FormData as FormDataType } from "@/validators/devenir.membre.validator";
 
 const testimonials = [
   {
@@ -74,9 +76,7 @@ const FormMember = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [api, setApi] = useState<UseEmblaCarouselType[1] | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const { isSubmitting, errorMessage, successMessage, submitForm } = useMemberForm();
 
   // Objet formData complet pour toutes les étapes
   const [formData, setFormData] = useState({
@@ -159,8 +159,13 @@ const FormMember = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < 4) {
-      setCurrentStep((prev) => prev + 1);
+    // Valider l'étape actuelle avant de passer à la suivante
+    if (isStepValid(currentStep, formData as FormDataType)) {
+      if (currentStep < 4) {
+        setCurrentStep((prev) => prev + 1);
+      }
+    } else {
+      console.warn(`⚠️ [VALIDATION] L'étape ${currentStep} n'est pas valide`);
     }
   };
 
@@ -171,36 +176,13 @@ const FormMember = () => {
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    try {
-      const response = await fetch("/api/membre", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccessMessage(data.message);
-        // Rediriger vers la page de confirmation après 1.5 secondes
-        setTimeout(() => {
-          router.push("/confirmation");
-        }, 1500);
-      } else {
-        setErrorMessage(data.error || "Une erreur est survenue");
-        setIsSubmitting(false);
-      }
-    } catch (error) {
-      console.error("Erreur:", error);
-      setErrorMessage("Une erreur est survenue lors de l'envoi du formulaire");
-      setIsSubmitting(false);
+    // Valider l'étape 4 avant de soumettre
+    if (!isStepValid(4, formData as FormDataType)) {
+      console.error("❌ [VALIDATION] L'étape 4 n'est pas valide, soumission annulée");
+      return;
     }
+    
+    await submitForm(formData as FormDataType);
   };
   useEffect(() => {
     if (!api) return;
@@ -325,6 +307,7 @@ const FormMember = () => {
                       onRadioChange={handleRadioChange}
                       onNext={nextStep}
                       onPrev={prevStep}
+                      isStepValid={isStepValid(1, formData as FormDataType)}
                     />
                   )}
                   {currentStep === 2 && (
@@ -334,6 +317,7 @@ const FormMember = () => {
                       onRadioChange={handleRadioChange}
                       onNext={nextStep}
                       onPrev={prevStep}
+                      isStepValid={isStepValid(2, formData as FormDataType)}
                     />
                   )}
                   {currentStep === 3 && (
@@ -343,6 +327,7 @@ const FormMember = () => {
                       onRadioChange={handleRadioChange}
                       onNext={nextStep}
                       onPrev={prevStep}
+                      isStepValid={isStepValid(3, formData as FormDataType)}
                     />
                   )}
                   {currentStep === 4 && (
@@ -355,6 +340,7 @@ const FormMember = () => {
                       isSubmitting={isSubmitting}
                       errorMessage={errorMessage}
                       successMessage={successMessage}
+                      isStepValid={isStepValid(4, formData as FormDataType)}
                     />
                   )}
                 </div>

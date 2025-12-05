@@ -10,6 +10,7 @@ interface Form1Props {
   onRadioChange: (name: string, value: string) => void;
   onNext: () => void;
   onPrev: () => void;
+  isStepValid: boolean;
 }
 
 const Form1: React.FC<Form1Props> = ({
@@ -18,6 +19,7 @@ const Form1: React.FC<Form1Props> = ({
   onRadioChange,
   onNext,
   onPrev,
+  isStepValid,
 }) => {
   const statutOptions = [
     "J'ai déjà un business en activité",
@@ -173,7 +175,8 @@ const Form1: React.FC<Form1Props> = ({
           </Button>
           <Button
             onClick={onNext}
-            className="flex-1 bg-[#d7f75b] text-black cursor-pointer h-11 shadow-none rounded-lg hover:bg-[#d7f75b]/80 hover:text-black"
+            disabled={!isStepValid}
+            className="flex-1 bg-[#d7f75b] text-black cursor-pointer h-11 shadow-none rounded-lg hover:bg-[#d7f75b]/80 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Suivant
           </Button>
